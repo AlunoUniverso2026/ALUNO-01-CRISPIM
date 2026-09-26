@@ -1,5 +1,14 @@
 name: CI
 
+# Events definem em quais acontecimentos do GitHub Actions este workflow deve iniciar.
+# Neste arquivo:
+# - push: roda quando há envio de commits para o repositório, limitado pelos caminhos em `paths`
+# - pull_request: roda quando uma PR afeta esses mesmos caminhos
+# - workflow_dispatch: permite execução manual e aceita o input `dataset_paths`
+# Referência oficial:
+# https://docs.github.com/pt/rest/using-the-rest-api/github-event-types?apiVersion=2026-03-10
+# https://docs.github.com/pt/actions/reference/workflows-and-actions/workflow-syntax
+
 on:
   push:
     paths:
@@ -59,9 +68,13 @@ jobs:
         id: datasets
         shell: bash
         run: |
+          # Quando o disparo for manual (`workflow_dispatch`),
+          # usamos exatamente a lista informada no input `dataset_paths`.
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             DATASETS="${{ github.event.inputs.dataset_paths }}"
           else
+            # Quando o disparo vier de um `push`,
+            # calculamos os datasets alterados comparando o commit anterior com o atual.
             BASE="${{ github.event.before }}"
             if [[ -z "$BASE" || "$BASE" == "0000000000000000000000000000000000000000" ]]; then
               BASE="$(git rev-list --max-parents=0 HEAD | tail -n 1)"
@@ -83,16 +96,16 @@ jobs:
         run: echo "Nenhum dataset alterado."
 
       - name: Login no GHCR
-        #if: steps.datasets.outputs.paths != ''
+        if: steps.datasets.outputs.paths != ''
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
 
       - name: Baixar imagem do Fluig CLI
-        #if: steps.datasets.outputs.paths != ''
+        if: steps.datasets.outputs.paths != ''
         run: docker pull ghcr.io/cardevisi/fluig-cli:0.1.0
 
       - name: Deploy dos datasets alterados
-        #if: steps.datasets.outputs.paths != ''
+        if: steps.datasets.outputs.paths != ''
         env:
           FLUIG_BASE_URL: ${{ secrets.FLUIG_BASE_URL }}
           FLUIG_USERNAME: ${{ secrets.FLUIG_USERNAME }}
