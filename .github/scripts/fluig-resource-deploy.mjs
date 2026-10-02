@@ -27,32 +27,13 @@ async function main() {
     console.log(`- ${dataset}`);
   }
 
-  // O script cria um servidor lógico e faz login no CLI antes do export
-  // para que os próximos comandos reutilizem a mesma conexão autenticada.
+  // CHAMADAS DE COMANDO DO FLUIG CLI
 
-  /**CRIANDO SERVIDOR
 
-  CODE AQUI:
+  //FIM  CHAMADAS DE COMANDO DO FLUIG CLI
 
-  FIM CRIANDO SERVIDOR**/
-
-  await runCli([
-    "auth",
-    "login",
-    "--server-name",
-    connection.serverName,
-    "--username",
-    connection.username,
-    "--password",
-    connection.password,
-  ]);
-
-  /**EXPORTANDO DATASET
-
-  CODE AQUI:
-
-  EXPORTANDO DATASET**/
-
+  }
+  
 // Lê a configuração mínima do projeto usada para montar o nome do servidor
 // e outros parâmetros auxiliares do deploy.
 async function readConfig() {

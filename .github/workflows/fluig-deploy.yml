@@ -1,13 +1,10 @@
-name: CI
+name: FLUIG-DEPLOY
 
 # Events definem em quais acontecimentos do GitHub Actions este workflow deve iniciar.
 # Neste arquivo:
 # - push: roda quando há envio de commits para o repositório, limitado pelos caminhos em `paths`
 # - pull_request: roda quando uma PR afeta esses mesmos caminhos
 # - workflow_dispatch: permite execução manual e aceita o input `dataset_paths`
-# Referência oficial:
-# https://docs.github.com/pt/rest/using-the-rest-api/github-event-types?apiVersion=2026-03-10
-# https://docs.github.com/pt/actions/reference/workflows-and-actions/workflow-syntax
 
 on:
   push:
